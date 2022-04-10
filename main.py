@@ -64,6 +64,10 @@ def find_links(file):
                           f'\n{count} unique links have been exported to the links.txt file.')
 
 
+def close_window():
+    window.destroy()
+
+
 window = Tk()
 window.title('URL extract from spreadsheet')
 window.geometry("550x270")
@@ -74,9 +78,8 @@ label_file_explorer = Label(window, text="Please select a spreadsheet file to ex
 
 button_explore = Button(window, text="Browse Files", command=browse_files, width=10)
 button_extract = Button(window, text="Extract", command=lambda: find_links(label_file_explorer.cget("text").split(" ")[2]), width=10)
-button_exit = Button(window, text="Exit", command=exit, width=10)
 output = Label(window, width=78, height=10, fg="black")
-
+button_exit = Button(window, text="Exit", command=close_window, width=10)
 
 label_file_explorer.place(x=0, y=0)
 button_explore.place(x=195, y=40)
