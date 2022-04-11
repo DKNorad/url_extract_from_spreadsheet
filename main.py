@@ -8,7 +8,7 @@ import re
 def browse_files():
     filename = filedialog.askopenfilename(initialdir="/",
                                           title="Select a File",
-                                          filetypes=(("Spreadsheets","*.xlsx;*.xlsm;*.xltx;*.xltm"),("All files","*.*")))
+                                          filetypes=(("Spreadsheets", "*.xlsx;*.xlsm;*.xltx;*.xltm"), ("All files", "*.*")))
     # Change label contents
     label_file_explorer.configure(text="File opened: " + filename)
 
