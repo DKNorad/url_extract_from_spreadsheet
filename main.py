@@ -10,13 +10,14 @@ def browse_files():
                                           title="Select a File",
                                           filetypes=(("Spreadsheets", "*.xlsx;*.xlsm;*.xltx;*.xltm"), ("All files", "*.*")))
     # Change label contents
-    label_file_explorer.configure(text="File opened: " + filename)
+    label_file_explorer.configure(text=filename)
 
 
 # Function for extracting URLs from the file
 def find_links(file):
     # Open the file.
     try:
+        print(label_file_explorer.cget("text"))
         wb = load_workbook(file, data_only=True)
     except:
         output.configure(text=f'Please select a valid file.\n')
@@ -81,7 +82,7 @@ label_file_explorer = Label(window, text="Please select a spreadsheet file to ex
 
 # Create buttons and output label
 button_explore = Button(window, text="Browse Files", command=browse_files, width=10)
-button_extract = Button(window, text="Extract", command=lambda: find_links(label_file_explorer.cget("text").split(" ")[2]), width=10)
+button_extract = Button(window, text="Extract", command=lambda: find_links(label_file_explorer.cget("text")), width=10)
 output = Label(window, width=78, height=10, fg="black")
 button_exit = Button(window, text="Exit", command=close_window, width=10)
 
