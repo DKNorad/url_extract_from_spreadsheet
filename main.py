@@ -1,25 +1,38 @@
-from tkinter import *
-from tkinter import filedialog
-from openpyxl import load_workbook
+import os
+import platform
 import re
+import subprocess
+from tkinter import *
+from tkinter import filedialog, TkVersion
+from openpyxl import load_workbook
+from openpyxl.utils.exceptions import InvalidFileException
 
 
-# Function for opening the file explorer window
 def browse_files():
+    """Opening the file explorer window."""
     filename = filedialog.askopenfilename(initialdir="/",
                                           title="Select a File",
-                                          filetypes=(("Spreadsheets", "*.xlsx;*.xlsm;*.xltx;*.xltm"), ("All files", "*.*")))
+                                          filetypes=(("Spreadsheets", "*.xlsx *.xlsm *.xltx *.xltm"), ("All files", "*.*")))
     # Change label contents
     label_file_explorer.configure(text=filename)
 
 
-# Function for extracting URLs from the file
+def open_output_txt_file():
+    """Open the links.txt output file"""
+    if platform.system() == 'Darwin':  # macOS
+        subprocess.call(('open', "links.txt"))
+    elif platform.system() == 'Windows':  # Windows
+        os.startfile("links.txt")
+    else:  # linux variants
+        subprocess.call(('xdg-open', "links.txt"))
+
+
 def find_links(file):
+    """Extracting URLs from the file"""
     # Open the file.
     try:
-        print(label_file_explorer.cget("text"))
         wb = load_workbook(file, data_only=True)
-    except:
+    except InvalidFileException:
         output.configure(text=f'Please select a valid file.\n')
 
     # Go through all the sheets and cells of the file.
@@ -62,8 +75,7 @@ def find_links(file):
                 count += 1
                 f.write(f'{link}\n')
     # Change label contents
-    output.configure(text=f'{"|" * 60}'
-                          f'\n{count} unique links have been exported to the links.txt file.')
+    output.configure(text=f'{count} unique links have been exported to the links.txt file.')
 
 
 # Function for closing the window
@@ -74,24 +86,28 @@ def close_window():
 # Defining Tkinter parameters
 window = Tk()
 window.title('URL extract from spreadsheet')
-window.geometry("550x270")
+window.geometry("600x200")
 window.config(background="white")
 
 # Create a File Explorer label
-label_file_explorer = Label(window, text="Please select a spreadsheet file to extract URLs from.", width=78, height=2, fg="black")
+label_file_explorer = Label(window, text="Please select a spreadsheet file to extract URLs from.",
+                            fg="black", wraplength=585)
 
 # Create buttons and output label
-button_explore = Button(window, text="Browse Files", command=browse_files, width=10)
-button_extract = Button(window, text="Extract", command=lambda: find_links(label_file_explorer.cget("text")), width=10)
-output = Label(window, width=78, height=10, fg="black")
-button_exit = Button(window, text="Exit", command=close_window, width=10)
+button_explore = Button(window, text="Browse Files", command=browse_files)
+button_extract = Button(window, text="Extract", command=lambda: find_links(label_file_explorer.cget("text")))
+open_txt_file = Button(window, text="Open links.txt", command=lambda: open_output_txt_file())
+output = Label(window, height=5, width=74, fg="black", wraplength=585)
+button_exit = Button(window, text="Exit", command=close_window)
 
 # Place the elements in the window
-label_file_explorer.place(x=0, y=0)
-button_explore.place(x=195, y=40)
-button_extract.place(x=280, y=40)
-output.place(x=0, y=75)
-button_exit.place(x=240, y=235)
+label_file_explorer.grid(column=0, row=0, sticky=EW, columnspan=3)
+button_explore.grid(column=0, row=1, sticky=E, padx=0, pady=5)
+button_extract.grid(column=1, row=1, sticky=EW, padx=0, pady=5)
+open_txt_file.grid(column=2, row=1, sticky=W, padx=0, pady=5)
+output.grid(column=0, row=2, sticky=W, columnspan=3)
+button_exit.grid(column=0, row=3, sticky=EW, columnspan=3)
 
+print(TkVersion)
 # Let the window wait for any events
 window.mainloop()
