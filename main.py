@@ -3,7 +3,7 @@ import platform
 import re
 import subprocess
 from tkinter import *
-from tkinter import filedialog, TkVersion
+from tkinter import filedialog
 from openpyxl import load_workbook
 from openpyxl.utils.exceptions import InvalidFileException
 
@@ -19,12 +19,15 @@ def browse_files():
 
 def open_output_txt_file():
     """Open the links.txt output file"""
-    if platform.system() == 'Darwin':  # macOS
-        subprocess.call(('open', "links.txt"))
-    elif platform.system() == 'Windows':  # Windows
-        os.startfile("links.txt")
-    else:  # linux variants
-        subprocess.call(('xdg-open', "links.txt"))
+    try:
+        if platform.system() == 'Darwin':  # macOS
+            subprocess.call(('open', "links.txt"))
+        elif platform.system() == 'Windows':  # Windows
+            os.startfile("links.txt")
+        else:  # linux variants
+            subprocess.call(('xdg-open', "links.txt"))
+    except FileNotFoundError:
+        output.configure(text=f"Can't find the links.txt output file.\n")
 
 
 def find_links(file):
@@ -108,6 +111,5 @@ open_txt_file.grid(column=2, row=1, sticky=W, padx=0, pady=5)
 output.grid(column=0, row=2, sticky=W, columnspan=3)
 button_exit.grid(column=0, row=3, sticky=EW, columnspan=3)
 
-print(TkVersion)
 # Let the window wait for any events
 window.mainloop()
