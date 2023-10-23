@@ -12,7 +12,8 @@ def browse_files():
     """Opening the file explorer window."""
     filename = filedialog.askopenfilename(initialdir="/",
                                           title="Select a File",
-                                          filetypes=(("Spreadsheets", "*.xlsx *.xlsm *.xltx *.xltm"), ("All files", "*.*")))
+                                          filetypes=(("Spreadsheets", "*.xlsx *.xlsm *.xltx *.xltm"),
+                                                     ("All files", "*.*")))
     # Change label contents
     label_file_explorer.configure(text=filename)
 
@@ -30,13 +31,13 @@ def open_output_txt_file():
         output.configure(text=f"Can't find the links.txt output file.\n")
 
 
-def find_links(file):
+def find_links(file: str) -> None:
     """Extracting URLs from the file"""
     # Open the file.
     try:
         wb = load_workbook(file, data_only=True)
     except InvalidFileException:
-        output.configure(text=f'Please select a valid file.\n')
+        return output.configure(text=f'Please select a valid file.\n')
 
     # Go through all the sheets and cells of the file.
     links = []
